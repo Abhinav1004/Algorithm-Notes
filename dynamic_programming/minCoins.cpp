@@ -3,6 +3,7 @@
 /*
 1. Conventional
 2. Memoization
+3. Tabulated
 */
 #include<bits/stdc++.h>
 using namespace std;
@@ -45,6 +46,30 @@ int minCoinsDp(int value,int cm[],int m,int dp[]){
 		return dp[value];
 	}
 }
+
+int minCoinsTab(int value,int cm[],int m){
+	int dp[value+1];
+	fill_n(dp,value+1,INT_MAX);
+	dp[0] = 0;
+	for(int i=1;i<=value;i++){
+		// int res = INT_MAX;
+		for(int j=0;j<m;j++){
+			if(i>=cm[j]){
+				int sub_res = dp[i-cm[j]];
+				if(sub_res!=INT_MAX && sub_res+1<dp[i])
+					dp[i] = sub_res+1;	
+			}
+		}
+	}
+	if(dp[value]==INT_MAX)
+		return -1;
+
+	return dp[value];
+}
+void printArray(vector<int> v){
+	for(int i=0;i<v.size();i++)
+		cout<<v[i]<<"\n";
+}
 int main(int argc, char const *argv[])
 {
 	int test;
@@ -57,7 +82,8 @@ int main(int argc, char const *argv[])
 		int dp[value+1];
 		fill_n(dp,value+1,-1);
 		dp[0]=0;
-		int num_coins = minCoinsDp(value,currency,10,dp);
+		// int num_coins = minCoinsDp(value,currency,10,dp);
+		int num_coins = minCoinsTab(value,currency,10);
 		cout<<num_coins<<"\n";
 	}
 	return 0;
